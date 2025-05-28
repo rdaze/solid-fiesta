@@ -17,12 +17,14 @@ A minimalist Instagram Reels-style mobile app built with Flutter.
 
 ## 📁 Filename Format
 
-Each video file name should follow this pattern:
+Each video file name should follow this pattern:  
+```
 y_username_n.mp4
-^ ^ ^
-| | └── Follow state: y for Followed, n for Follow
-| └────────── Username (can include underscores)
-└──────────── Like state: y for Liked, n for Not Liked
+^    ^     ^
+|    |     └──── Follow state: `y` for Followed, `n` for Follow
+|    └────────── Username (can include underscores)
+└─────────────── Like state: `y` for Liked, `n` for Not Liked
+```
 
 **Examples:**
 - `y_john_doe_y.mp4` → liked & followed
