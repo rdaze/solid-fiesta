@@ -277,15 +277,13 @@ class _ReelItemState extends State<ReelItem> {
                     _controller.setVolume(_isMuted ? 0.0 : 1.0);
                   });
                 },
-                child: SizedBox.expand(
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: SizedBox(
-                      width: _controller.value.size.width,
-                      height: _controller.value.size.height,
+                child: Container(
+                  color: Colors.black,
+                  alignment: Alignment.center,
+                    child: AspectRatio(
+                      aspectRatio: 9 / 16,
                       child: VideoPlayer(_controller),
                     ),
-                  ),
                 ),
               )
             : Center(child: CircularProgressIndicator()),
