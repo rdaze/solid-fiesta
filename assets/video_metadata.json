@@ -1,0 +1,40 @@
+{
+  "videos": [
+    {
+      "filename": "y_DHL_y.mp4",
+      "creator": "dhl_official",
+      "liked": true,
+      "follow": true,
+      "comments": [
+        { "user": "janine", "comment": "Nice drop!" },
+        { "user": "ralf1", "comment": "Love the branding." },
+        { "user": "janine1", "comment": "Nice drop!" },
+        { "user": "ralf2", "comment": "Love the branding." },
+        { "user": "janine2", "comment": "Nice drop!" },
+        { "user": "ralf3", "comment": "Love the branding." },
+        { "user": "janine3", "comment": "Nice drop!" },
+        { "user": "ralf4", "comment": "Love the branding." },
+        { "user": "janine4", "comment": "Nice drop!" },
+        { "user": "ralf5", "comment": "Love the branding." }
+      ]
+    },
+    {
+      "filename": "y_OutDoorGang_n.mp4",
+      "creator": "outdoorgang",
+      "liked": true,
+      "follow": false,
+      "comments": [
+        { "user": "robin", "comment": "I need one!" }
+      ]
+    },
+    {
+      "filename": "n_Doggo_n.mp4",
+      "creator": "doglover92",
+      "liked": true,
+      "follow": false,
+      "comments": [
+        { "user": "anna", "comment": "Cute pupper!" }
+      ]
+    }
+  ]
+}

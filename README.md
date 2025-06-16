@@ -7,29 +7,42 @@ A minimalist Instagram Reels-style mobile app built with Flutter.
 ## 🚀 Features
 
 - 🎞️ Vertical scrollable video feed (`PageView`)
-- ❤️ Like button (visual only, based on filename)
-- 💬 Comment and Share buttons (visual only)
+- ❤️ Like button (visual only, parsed from json)
+- 💬 Comments (visual only, parsed from json) 
+- 🔗 Share buttons (visual only)
 - 🔇 Tap anywhere to mute/unmute
-- 👤 Display username and Follow / Followed button (parsed from filename)
+- 👤 Display username and Follow / Followed button (parsed from json)
 - 📂 Loads videos from `assets/videos/` and copies them to internal storage
 
 ---
 
-## 📁 Filename Format
+## 📁 Video Metadata
 
-Each video file name should follow this pattern:  
-```
-y_username_n.mp4
-^    ^     ^
-|    |     └──── Follow state: `y` for Followed, `n` for Follow
-|    └────────── Username (can include underscores)
-└─────────────── Like state: `y` for Liked, `n` for Not Liked
+Each video now uses a structured metadata JSON file `(assets video_metadata.json)` instead of encoding metadata in the filename.
+
+```json
+{
+  "videos": [
+    {
+      "filename": "video1.mp4",
+      "creator": "john_doe",
+      "liked": true,
+      "follow": false,
+      "comments": [
+        { "user": "alice", "comment": "Great video!" },
+        { "user": "bob", "comment": "Cool!" }
+      ]
+    }
+  ]
+}
 ```
 
-**Examples:**
-- `y_john_doe_y.mp4` → liked & followed
-- `n_alice_n.mp4` → not liked & not followed
-- `y_chef_mike_n.mp4` → liked & not followed
+**Metadata Fields:**
+- `filename` – Name of the associated video file in assets/videos/
+- `creator` – Username of the video poster
+- `liked` – Whether the video is liked (true or false)
+- `follow` – Whether the creator is followed (true or false)
+- `comments` – List of comments (each with user and comment)
 
 ---
 
@@ -37,11 +50,11 @@ y_username_n.mp4
 
 - Flutter
 - Android SDK (emulator or physical device)
-- iOS not yet tested (should be possible)
+- iOS (emulator or physical device)
 
 ---
 
-## ⚠️ Important: Impeller Must Be Disabled
+## ⚠️ Important: Impeller Must Be Disabled (Android only)
 
 Flutter's Impeller rendering backend (used by default) can crash when playing videos on emulators.
 
