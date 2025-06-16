@@ -106,6 +106,9 @@ class _ReelsScreenState extends State<ReelsScreen> {
   List<File> videoFiles = [];
   late Map<String, VideoMeta> videoMetadata;
   bool loading = true;
+  Map<int, VideoPlayerController> _controllerCache = {};
+  int _currentPage = 0;
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -118,16 +121,51 @@ class _ReelsScreenState extends State<ReelsScreen> {
       final Map<String, VideoMeta> metadata =
           results[1] as Map<String, VideoMeta>;
 
-      setState(() {
-        videoFiles = files.where((file) {
-          final name = file.path.split('/').last;
-          return metadata.containsKey(name);
-        }).toList();
+      final filteredFiles = files.where((file) {
+        final name = file.path.split('/').last;
+        return metadata.containsKey(name);
+      }).toList();
 
+      setState(() {
+        videoFiles = filteredFiles;
         videoMetadata = metadata;
         loading = false;
       });
+
+      _preloadControllers(0); // preload first + next
     });
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _controllerCache.values) {
+      controller.dispose();
+    }
+    _controllerCache.clear();
+    super.dispose();
+  }
+
+  void _preloadControllers(int pageIndex) async {
+    List<int> toKeep = [pageIndex - 1, pageIndex, pageIndex + 1];
+
+    for (int i = 0; i < videoFiles.length; i++) {
+      if (!toKeep.contains(i) && _controllerCache.containsKey(i)) {
+        _controllerCache[i]?.dispose();
+        _controllerCache.remove(i);
+      }
+    }
+
+    for (int i in toKeep) {
+      if (i >= 0 && i < videoFiles.length && !_controllerCache.containsKey(i)) {
+        final controller = VideoPlayerController.file(videoFiles[i]);
+        await controller.initialize();
+        controller.setLooping(true);
+        controller.setVolume(1.0);
+        _controllerCache[i] = controller;
+      }
+    }
+
+    setState(() {});
   }
 
   @override
@@ -136,14 +174,44 @@ class _ReelsScreenState extends State<ReelsScreen> {
     if (videoFiles.isEmpty) return Center(child: Text("No videos found."));
 
     return PageView.builder(
+      controller: _pageController,
       scrollDirection: Axis.vertical,
       physics: const BouncingScrollPhysics(),
       itemCount: videoFiles.length,
+      onPageChanged: (index) {
+        _currentPage = index;
+        _preloadControllers(index);
+        for (var entry in _controllerCache.entries) {
+          if (entry.key == index) {
+            if (entry.value.value.isInitialized) {
+              entry.value.play();
+            } else {
+              entry.value.addListener(() {
+                if (entry.value.value.isInitialized) {
+                  entry.value.play();
+                }
+              });
+            }
+          } else {
+            entry.value.pause();
+          }
+        }
+      },
       itemBuilder: (context, index) {
         final file = videoFiles[index];
         final meta = videoMetadata[file.path.split('/').last]!;
+        final controller = _controllerCache[index];
 
-        return ReelItem(file: file, metadata: meta);
+        if (controller == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return ReelItem(
+          key: ValueKey(file.path),
+          file: file,
+          metadata: meta,
+          controller: controller,
+        );
       },
     );
   }
@@ -152,47 +220,63 @@ class _ReelsScreenState extends State<ReelsScreen> {
 class ReelItem extends StatefulWidget {
   final File file;
   final VideoMeta metadata;
+  final VideoPlayerController controller;
 
-  const ReelItem({super.key, required this.file, required this.metadata});
+  const ReelItem({
+    super.key,
+    required this.file,
+    required this.metadata,
+    required this.controller,
+  });
 
   @override
   State<ReelItem> createState() => _ReelItemState();
 }
 
 class _ReelItemState extends State<ReelItem> {
-  late VideoPlayerController _controller;
-  late bool _isLiked;
-  late bool _isFollowed;
-  late String _username;
-  late List<Comment> _comments;
   bool _isMuted = false;
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    final bool isLiked = widget.metadata.liked;
+    final bool isFollowed = widget.metadata.follow;
+    final String username = widget.metadata.creator;
+    final List<Comment> comments = widget.metadata.comments;
 
-    final meta = widget.metadata;
-    _isLiked = meta.liked;
-    _isFollowed = meta.follow;
-    _username = meta.creator;
-    _comments = meta.comments;
-
-    _controller = VideoPlayerController.file(widget.file)
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.setLooping(true);
-        _controller.setVolume(1.0);
-        _controller.play();
-      });
+    return Stack(
+      children: [
+        widget.controller.value.isInitialized
+            ? GestureDetector(
+                onTap: () {
+                  if (!widget.controller.value.isInitialized) return;
+                  setState(() {
+                    _isMuted = !_isMuted;
+                    widget.controller.setVolume(_isMuted ? 0.0 : 1.0);
+                  });
+                },
+                child: Container(
+                  color: Colors.black,
+                  alignment: Alignment.center,
+                  child: AspectRatio(
+                    aspectRatio: 9 / 16,
+                    child: VideoPlayer(widget.controller),
+                  ),
+                ),
+              )
+            : const Center(child: CircularProgressIndicator()),
+        _buildOverlay(username, isLiked, isFollowed, comments, context),
+      ],
+    );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Widget _buildOverlay() {
+  Widget _buildOverlay(
+    String username,
+    bool isLiked,
+    bool isFollowed,
+    List<Comment> comments,
+    BuildContext context,
+  ) {
+    bool followed = isFollowed;
     return Stack(
       children: [
         Positioned(
@@ -203,26 +287,24 @@ class _ReelItemState extends State<ReelItem> {
             children: [
               IconButton(
                 icon: Icon(
-                  _isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: _isLiked ? Colors.red : Colors.white,
+                  isLiked ? Icons.favorite : Icons.favorite_border,
+                  color: isLiked ? Colors.red : Colors.white,
                   size: 32,
                 ),
-                onPressed: () {
-                  // Visual only
-                },
+                onPressed: () {},
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               IconButton(
-                icon: Icon(Icons.comment, size: 32),
+                icon: const Icon(Icons.comment, size: 32),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
                     builder: (_) => SizedBox(
                       height: 300,
                       child: ListView.builder(
-                        itemCount: _comments.length,
+                        itemCount: comments.length,
                         itemBuilder: (_, i) {
-                          final comment = _comments[i];
+                          final comment = comments[i];
                           return ListTile(
                             title: Text(comment.user),
                             subtitle: Text(comment.comment),
@@ -233,12 +315,10 @@ class _ReelItemState extends State<ReelItem> {
                   );
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               IconButton(
-                icon: Icon(Icons.share, size: 32),
-                onPressed: () {
-                  // Visual only
-                },
+                icon: const Icon(Icons.share, size: 32),
+                onPressed: () {},
               ),
             ],
           ),
@@ -251,7 +331,7 @@ class _ReelItemState extends State<ReelItem> {
               Directionality(
                 textDirection: TextDirection.ltr,
                 child: Text(
-                  '@$_username',
+                  '@$username',
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -261,11 +341,9 @@ class _ReelItemState extends State<ReelItem> {
                 ),
               ),
               const SizedBox(width: 12),
-              _isFollowed
+              followed
                   ? ElevatedButton(
-                      onPressed: () => setState(() {
-                        _isFollowed = !_isFollowed;
-                      }),
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
@@ -273,55 +351,26 @@ class _ReelItemState extends State<ReelItem> {
                           vertical: 8,
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Followed',
                         style: TextStyle(color: Colors.black),
                       ),
                     )
                   : OutlinedButton(
-                      onPressed: () => setState(() {
-                        _isFollowed = !_isFollowed;
-                      }),
+                      onPressed: () {},
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        side: BorderSide(color: Colors.white),
+                        side: const BorderSide(color: Colors.white),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
                       ),
-                      child: Text('Follow'),
+                      child: const Text('Follow'),
                     ),
             ],
           ),
         ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _controller.value.isInitialized
-            ? GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isMuted = !_isMuted;
-                    _controller.setVolume(_isMuted ? 0.0 : 1.0);
-                  });
-                },
-                child: Container(
-                  color: Colors.black,
-                  alignment: Alignment.center,
-                  child: AspectRatio(
-                    aspectRatio: 9 / 16,
-                    child: VideoPlayer(_controller),
-                  ),
-                ),
-              )
-            : Center(child: CircularProgressIndicator()),
-        _buildOverlay(),
       ],
     );
   }
