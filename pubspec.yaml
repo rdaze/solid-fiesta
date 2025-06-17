@@ -7,6 +7,7 @@ environment:
   sdk: ^3.8.0
 
 dependencies:
+  blockies: ^0.1.2
   flutter:
     sdk: flutter
   path_provider: ^2.1.5

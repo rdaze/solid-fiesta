@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:blockies/blockies.dart';
 
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
@@ -243,29 +244,61 @@ class _ReelItemState extends State<ReelItem> {
     final String username = widget.metadata.creator;
     final List<Comment> comments = widget.metadata.comments;
 
+    if (!widget.controller.value.isInitialized) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Stack(
+      fit: StackFit.expand,
       children: [
-        widget.controller.value.isInitialized
-            ? GestureDetector(
-                onTap: () {
-                  if (!widget.controller.value.isInitialized) return;
-                  setState(() {
-                    _isMuted = !_isMuted;
-                    widget.controller.setVolume(_isMuted ? 0.0 : 1.0);
-                  });
-                },
-                child: Container(
-                  color: Colors.black,
-                  alignment: Alignment.center,
-                  child: AspectRatio(
-                    aspectRatio: 9 / 16,
-                    child: VideoPlayer(widget.controller),
-                  ),
+        Positioned.fill(
+          child: Transform.scale(
+            scale: 1.2,
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Colors.black.withValues(alpha: 0.6),
+                BlendMode.darken,
+              ),
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: widget.controller.value.size.width,
+                  height: widget.controller.value.size.height,
+                  child: VideoPlayer(widget.controller),
                 ),
-              )
-            : const Center(child: CircularProgressIndicator()),
+              ),
+            ),
+          ),
+        ),
+        Center(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                _isMuted = !_isMuted;
+                widget.controller.setVolume(_isMuted ? 0.0 : 1.0);
+              });
+            },
+            child: AspectRatio(
+              aspectRatio: 9 / 16,
+              child: VideoPlayer(widget.controller),
+            ),
+          ),
+        ),
+
         _buildOverlay(username, isLiked, isFollowed, comments, context),
       ],
+    );
+  }
+
+  Widget buildAvatar(String username) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      child: ClipOval(child: Blockies(seed: username, size: 8)),
     );
   }
 
@@ -277,101 +310,146 @@ class _ReelItemState extends State<ReelItem> {
     BuildContext context,
   ) {
     bool followed = isFollowed;
-    return Stack(
-      children: [
-        Positioned(
-          right: 16,
-          bottom: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                icon: Icon(
-                  isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: isLiked ? Colors.red : Colors.white,
-                  size: 32,
-                ),
-                onPressed: () {},
-              ),
-              const SizedBox(height: 16),
-              IconButton(
-                icon: const Icon(Icons.comment, size: 32),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (_) => SizedBox(
-                      height: 300,
-                      child: ListView.builder(
-                        itemCount: comments.length,
-                        itemBuilder: (_, i) {
-                          final comment = comments[i];
-                          return ListTile(
-                            title: Text(comment.user),
-                            subtitle: Text(comment.comment),
-                          );
-                        },
-                      ),
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenWidth = constraints.maxWidth;
+        final screenHeight = constraints.maxHeight;
+
+        final videoWidth = screenHeight * (9 / 16);
+        final horizontalPadding = ((screenWidth - videoWidth) / 2).clamp(
+          0,
+          screenWidth,
+        );
+
+        return Stack(
+          children: [
+            Positioned(
+              right: horizontalPadding + 16,
+              bottom: 125,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      color: isLiked ? Colors.red : Colors.white,
+                      size: 42,
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              IconButton(
-                icon: const Icon(Icons.share, size: 32),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-        Positioned(
-          left: 16,
-          bottom: 100,
-          child: Row(
-            children: [
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Text(
-                  '@$username',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
+                    onPressed: () {},
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  IconButton(
+                    icon: const Icon(Icons.comment, size: 42),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (_) => SizedBox(
+                          height: 600,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: Center(
+                                  child: Text(
+                                    'Comments',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const Divider(thickness: 1),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: comments.length,
+                                  itemBuilder: (_, i) {
+                                    final comment = comments[i];
+                                    return ListTile(
+                                      leading: buildAvatar(comment.user),
+                                      title: Text(comment.user),
+                                      subtitle: Text(comment.comment),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  IconButton(
+                    icon: const Icon(Icons.share, size: 42),
+                    onPressed: () {},
+                  ),
+                  const SizedBox(height: 16),
+                  IconButton(
+                    icon: const Icon(Icons.more_horiz, size: 42),
+                    onPressed: () {},)
+                ],
               ),
-              const SizedBox(width: 12),
-              followed
-                  ? ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+            ),
+            Positioned(
+              left: horizontalPadding + 16,
+              bottom: 125,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(padding: const EdgeInsets.only(right: 10),
+                  child: buildAvatar(username),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        username,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
                         ),
                       ),
-                      child: const Text(
-                        'Followed',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    )
-                  : OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.white),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                      ),
-                      child: const Text('Follow'),
-                    ),
-            ],
-          ),
-        ),
-      ],
+                      const SizedBox(width: 12),
+                      followed
+                          ? ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                              ),
+                              child: const Text(
+                                'Followed',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            )
+                          : OutlinedButton(
+                              onPressed: () {},
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                              ),
+                              child: const Text('Follow'),
+                            ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
