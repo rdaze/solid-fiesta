@@ -352,7 +352,7 @@ class _ReelItemState extends State<ReelItem> {
           children: [
             Positioned(
               right: horizontalPadding + 16,
-              bottom: 125,
+              bottom: 100,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -422,7 +422,7 @@ class _ReelItemState extends State<ReelItem> {
             ),
             Positioned(
               left: horizontalPadding + 16,
-              bottom: 125,
+              bottom: 100,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
