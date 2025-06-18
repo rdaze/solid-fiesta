@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:blockies/blockies.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'dart:io';
+import 'dart:ui';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
@@ -236,6 +238,26 @@ class ReelItem extends StatefulWidget {
 
 class _ReelItemState extends State<ReelItem> {
   bool _isMuted = false;
+  Uint8List? _thumbnail;
+
+  Future<void> _generateThumbnail() async {
+    final thumb = await VideoThumbnail.thumbnailData(
+      video: widget.file.path,
+      imageFormat: ImageFormat.JPEG,
+      quality: 75,
+    );
+    if (mounted) {
+      setState(() {
+        _thumbnail = thumb;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _generateThumbnail();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -251,25 +273,29 @@ class _ReelItemState extends State<ReelItem> {
     return Stack(
       fit: StackFit.expand,
       children: [
+        // Static blurred background
         Positioned.fill(
-          child: Transform.scale(
-            scale: 1.2,
-            child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                Colors.black.withValues(alpha: 0.6),
-                BlendMode.darken,
-              ),
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: widget.controller.value.size.width,
-                  height: widget.controller.value.size.height,
-                  child: VideoPlayer(widget.controller),
-                ),
-              ),
-            ),
-          ),
+          child: _thumbnail != null
+              ? ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: MemoryImage(_thumbnail!),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Colors.black.withValues(alpha: 0.5),
+                          BlendMode.darken,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(
+                  color: Colors.black,
+                ), // fallback until thumbnail is ready
         ),
+        // Foreground video (in 9:16)
         Center(
           child: GestureDetector(
             onTap: () {
@@ -389,7 +415,8 @@ class _ReelItemState extends State<ReelItem> {
                   const SizedBox(height: 16),
                   IconButton(
                     icon: const Icon(Icons.more_horiz, size: 42),
-                    onPressed: () {},)
+                    onPressed: () {},
+                  ),
                 ],
               ),
             ),
@@ -399,8 +426,9 @@ class _ReelItemState extends State<ReelItem> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(padding: const EdgeInsets.only(right: 10),
-                  child: buildAvatar(username),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: buildAvatar(username),
                   ),
                   const SizedBox(height: 8),
                   Row(
