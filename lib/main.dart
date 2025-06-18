@@ -113,6 +113,17 @@ class _ReelsScreenState extends State<ReelsScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
 
+  bool _isMuted = true;
+
+  void _toggleMute() {
+    setState(() {
+      _isMuted = !_isMuted;
+      for (final controller in _controllerCache.values) {
+        controller.setVolume(_isMuted ? 0.0 : 1.0);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -163,7 +174,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
         final controller = VideoPlayerController.file(videoFiles[i]);
         await controller.initialize();
         controller.setLooping(true);
-        controller.setVolume(1.0);
+        controller.setVolume(_isMuted ? 0.0 : 1.0);
         _controllerCache[i] = controller;
       }
     }
@@ -214,6 +225,8 @@ class _ReelsScreenState extends State<ReelsScreen> {
           file: file,
           metadata: meta,
           controller: controller,
+          isMuted: _isMuted,
+          onToggleMute: _toggleMute,
         );
       },
     );
@@ -224,12 +237,16 @@ class ReelItem extends StatefulWidget {
   final File file;
   final VideoMeta metadata;
   final VideoPlayerController controller;
+  final bool isMuted;
+  final VoidCallback onToggleMute;
 
   const ReelItem({
     super.key,
     required this.file,
     required this.metadata,
     required this.controller,
+    required this.isMuted,
+    required this.onToggleMute,
   });
 
   @override
@@ -237,7 +254,6 @@ class ReelItem extends StatefulWidget {
 }
 
 class _ReelItemState extends State<ReelItem> {
-  bool _isMuted = false;
   Uint8List? _thumbnail;
 
   Future<void> _generateThumbnail() async {
@@ -298,12 +314,7 @@ class _ReelItemState extends State<ReelItem> {
         // Foreground video (in 9:16)
         Center(
           child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _isMuted = !_isMuted;
-                widget.controller.setVolume(_isMuted ? 0.0 : 1.0);
-              });
-            },
+            onTap: widget.onToggleMute,
             child: AspectRatio(
               aspectRatio: 9 / 16,
               child: VideoPlayer(widget.controller),
@@ -473,6 +484,15 @@ class _ReelItemState extends State<ReelItem> {
                     ],
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              right: horizontalPadding + 16,
+              top: 50,
+              child: IconButton(
+                icon: Icon(widget.isMuted ? Icons.volume_off : null),
+                iconSize: 42,
+                onPressed: () {},
               ),
             ),
           ],
