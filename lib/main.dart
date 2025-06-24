@@ -13,8 +13,10 @@ import 'package:flutter/services.dart';
 
 import 'comment.dart';
 
-Future<Map<String, VideoMeta>> loadVideoMetadata() async {
-  final jsonStr = await rootBundle.loadString('assets/video_metadata.json');
+const String profileName = 'laralacht';
+
+Future<Map<String, VideoMeta>> loadVideoMetadata(String profile) async {
+  final jsonStr = await rootBundle.loadString('assets/metadata/$profile.json');
   final jsonData = json.decode(jsonStr);
 
   final List videos = jsonData['videos'];
@@ -25,16 +27,16 @@ Future<Map<String, VideoMeta>> loadVideoMetadata() async {
   return metadata;
 }
 
-Future<List<String>> loadVideoFilenamesFromMetadata() async {
-  final jsonStr = await rootBundle.loadString('assets/video_metadata.json');
+Future<List<String>> loadVideoFilenamesFromMetadata(String profile) async {
+  final jsonStr = await rootBundle.loadString('assets/metadata/$profile.json');
   final jsonData = json.decode(jsonStr);
   final List videos = jsonData['videos'];
 
   return videos.map((v) => v['filename'] as String).toList();
 }
 
-Future<List<File>> copyAssetVideosToLocal() async {
-  final filenames = await loadVideoFilenamesFromMetadata();
+Future<List<File>> copyAssetVideosToLocal(String profile) async {
+  final filenames = await loadVideoFilenamesFromMetadata(profile);
 
   final appDir = await getApplicationDocumentsDirectory();
   final videoDir = Directory('${appDir.path}/videos');
@@ -45,7 +47,7 @@ Future<List<File>> copyAssetVideosToLocal() async {
   List<File> copiedFiles = [];
 
   for (final name in filenames) {
-    final assetPath = 'assets/videos/$name';
+    final assetPath = 'assets/videos/$profile/$name';
     final localPath = '${videoDir.path}/$name';
 
     final byteData = await rootBundle.load(assetPath);
@@ -79,6 +81,7 @@ Future<List<File>> loadVideoFiles() async {
 
   return files;
 }
+
 
 void main() {
   runApp(MyApp());
@@ -128,7 +131,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
   void initState() {
     super.initState();
 
-    Future.wait([copyAssetVideosToLocal(), loadVideoMetadata()]).then((
+    Future.wait([copyAssetVideosToLocal(profileName), loadVideoMetadata(profileName)]).then((
       results,
     ) {
       final List<File> files = results[0] as List<File>;

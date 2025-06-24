@@ -23,5 +23,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/videos/
-    - assets/video_metadata.json
+    - assets/videos/MessiStyleLeo0313/
+    - assets/videos/laralacht/
+    - assets/videos/eli09health/
+    - assets/metadata/
