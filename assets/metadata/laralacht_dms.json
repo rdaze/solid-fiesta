@@ -1,0 +1,21 @@
+{
+  "threads": [
+    {
+      "id": "t1",
+      "user": "maria",
+      "messages": [
+        { "text": "Hey! Loved your last reel 😍", "fromMe": false, "ts": "2025-10-22T18:33:00Z" },
+        { "text": "Ahh thanks!! 🫶", "fromMe": true, "ts": "2025-10-22T18:34:05Z" },
+        { "text": "How did you do the transition?", "fromMe": false, "ts": "2025-10-22T18:35:11Z" }
+      ]
+    },
+    {
+      "id": "t2",
+      "user": "alex",
+      "messages": [
+        { "text": "Are you coming to the event tomorrow?", "fromMe": false, "ts": "2025-10-25T09:10:00Z" },
+        { "text": "Yep! See you there 🎉", "fromMe": true, "ts": "2025-10-25T09:12:40Z" }
+      ]
+    }
+  ]
+}

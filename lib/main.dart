@@ -1,19 +1,143 @@
+// main.dart
+
 import 'dart:convert';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 import 'package:blockies/blockies.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import 'dart:io';
-import 'dart:ui';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/services.dart';
-
 import 'comment.dart';
 
-const String profileName = 'MessiStyleLeo0313';
+// ---------------- NEW: root shell with bottom bar ----------------
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Reels Clone',
+      theme: ThemeData.dark(),
+      home: const _RootShell(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class _RootShell extends StatefulWidget {
+  const _RootShell({super.key});
+
+  @override
+  State<_RootShell> createState() => _RootShellState();
+}
+
+class _RootShellState extends State<_RootShell> {
+  int _tab = 0;
+
+  // NEW: key to talk to ReelsScreen
+  final GlobalKey<_ReelsScreenState> _reelsKey = GlobalKey<_ReelsScreenState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _tab,
+        children: [
+          ReelsScreen(key: _reelsKey),
+          const DirectMessagesScreen(),
+        ],
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(top: BorderSide(color: Colors.white24, width: .5)),
+            color: Colors.black,
+          ),
+          height: 64,
+          child: Align(
+            alignment: Alignment.center,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 260),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _BottomBarButton(
+                    icon: Icons.home_filled,
+                    label: 'Home',
+                    selected: _tab == 0,
+                    onTap: () {
+                      setState(() => _tab = 0);
+                      // Auto-unmute when returning to Home
+                      _reelsKey.currentState?.setMuted(false);
+                    },
+                  ),
+                  _BottomBarButton(
+                    icon: Icons.mail_outline,
+                    label: 'Direct',
+                    selected: _tab == 1,
+                    onTap: () {
+                      setState(() => _tab = 1);
+                      // Auto-mute when opening Direct
+                      _reelsKey.currentState?.setMuted(true);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomBarButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _BottomBarButton({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected ? Colors.white : Colors.white70;
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 26),
+            const SizedBox(height: 2),
+            Text(label, style: TextStyle(color: color, fontSize: 12)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------- EXISTING reels code (unchanged) ----------------
+
+const String profileName = 'laralacht';
 
 Future<Map<String, VideoMeta>> loadVideoMetadata(String profile) async {
   final jsonStr = await rootBundle.loadString('assets/metadata/$profile.json');
@@ -82,25 +206,6 @@ Future<List<File>> loadVideoFiles() async {
   return files;
 }
 
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Reels Clone',
-      theme: ThemeData.dark(),
-      home: ReelsScreen(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
 class ReelsScreen extends StatefulWidget {
   const ReelsScreen({super.key});
 
@@ -112,11 +217,21 @@ class _ReelsScreenState extends State<ReelsScreen> {
   List<File> videoFiles = [];
   late Map<String, VideoMeta> videoMetadata;
   bool loading = true;
-  Map<int, VideoPlayerController> _controllerCache = {};
+  final Map<int, VideoPlayerController> _controllerCache = {};
   int _currentPage = 0;
   final PageController _pageController = PageController();
 
   bool _isMuted = true;
+
+  void setMuted(bool value) {
+    if (_isMuted == value) return;
+    setState(() {
+      _isMuted = value;
+      for (final controller in _controllerCache.values) {
+        controller.setVolume(_isMuted ? 0.0 : 1.0);
+      }
+    });
+  }
 
   void _toggleMute() {
     setState(() {
@@ -131,9 +246,10 @@ class _ReelsScreenState extends State<ReelsScreen> {
   void initState() {
     super.initState();
 
-    Future.wait([copyAssetVideosToLocal(profileName), loadVideoMetadata(profileName)]).then((
-      results,
-    ) {
+    Future.wait([
+      copyAssetVideosToLocal(profileName),
+      loadVideoMetadata(profileName),
+    ]).then((results) {
       final List<File> files = results[0] as List<File>;
       final Map<String, VideoMeta> metadata =
           results[1] as Map<String, VideoMeta>;
@@ -149,7 +265,7 @@ class _ReelsScreenState extends State<ReelsScreen> {
         loading = false;
       });
 
-      _preloadControllers(0); // preload first + next
+      _preloadControllers(0);
     });
   }
 
@@ -187,8 +303,9 @@ class _ReelsScreenState extends State<ReelsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (loading) return Center(child: CircularProgressIndicator());
-    if (videoFiles.isEmpty) return Center(child: Text("No videos found."));
+    if (loading) return const Center(child: CircularProgressIndicator());
+    if (videoFiles.isEmpty)
+      return const Center(child: Text("No videos found."));
 
     return PageView.builder(
       controller: _pageController,
@@ -292,7 +409,6 @@ class _ReelItemState extends State<ReelItem> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Static blurred background
         Positioned.fill(
           child: _thumbnail != null
               ? ImageFiltered(
@@ -310,11 +426,8 @@ class _ReelItemState extends State<ReelItem> {
                     ),
                   ),
                 )
-              : Container(
-                  color: Colors.black,
-                ), // fallback until thumbnail is ready
+              : Container(color: Colors.black),
         ),
-        // Foreground video (in 9:16)
         Center(
           child: GestureDetector(
             onTap: widget.onToggleMute,
@@ -324,7 +437,6 @@ class _ReelItemState extends State<ReelItem> {
             ),
           ),
         ),
-
         _buildOverlay(username, isLiked, isFollowed, comments, context),
       ],
     );
@@ -503,4 +615,185 @@ class _ReelItemState extends State<ReelItem> {
       },
     );
   }
+}
+
+// ---------------- NEW: Direct Messages UI ----------------
+
+class DirectMessagesScreen extends StatefulWidget {
+  const DirectMessagesScreen({super.key});
+
+  @override
+  State<DirectMessagesScreen> createState() => _DirectMessagesScreenState();
+}
+
+class _DirectMessagesScreenState extends State<DirectMessagesScreen> {
+  late Future<List<ChatThread>> _threadsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _threadsFuture = loadThreadsForProfile(profileName);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Direct Messages'), centerTitle: true),
+      body: FutureBuilder<List<ChatThread>>(
+        future: _threadsFuture,
+        builder: (context, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snap.hasError) {
+            return Center(child: Text('Failed to load chats: ${snap.error}'));
+          }
+          final threads = snap.data ?? [];
+          if (threads.isEmpty) {
+            return const Center(child: Text('No chats yet.'));
+          }
+          return ListView.separated(
+            itemCount: threads.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, i) {
+              final t = threads[i];
+              return ListTile(
+                leading: ClipOval(
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Blockies(seed: t.user, size: 8),
+                  ),
+                ),
+                title: Text(t.user),
+                subtitle: Text(
+                  t.messages.isNotEmpty ? t.messages.last.text : 'No messages',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ChatThreadScreen(thread: t),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ChatThreadScreen extends StatelessWidget {
+  final ChatThread thread;
+
+  const ChatThreadScreen({super.key, required this.thread});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            ClipOval(
+              child: SizedBox(
+                width: 32,
+                height: 32,
+                child: Blockies(seed: thread.user, size: 8),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(thread.user),
+          ],
+        ),
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(12),
+        itemCount: thread.messages.length,
+        itemBuilder: (context, i) {
+          final m = thread.messages[i];
+          final isMe = m.fromMe;
+          return Align(
+            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.7,
+              ),
+              decoration: BoxDecoration(
+                color: isMe ? Colors.blueAccent : Colors.white10,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(16),
+                  topRight: const Radius.circular(16),
+                  bottomLeft: Radius.circular(isMe ? 16 : 4),
+                  bottomRight: Radius.circular(isMe ? 4 : 16),
+                ),
+              ),
+              child: Text(
+                m.text,
+                style: TextStyle(
+                  color: isMe ? Colors.white : Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ---------------- NEW: DM models + loader ----------------
+
+class ChatThread {
+  final String id;
+  final String user; // display name / username
+  final List<ChatMessage> messages;
+
+  ChatThread({required this.id, required this.user, required this.messages});
+
+  factory ChatThread.fromJson(Map<String, dynamic> json) {
+    final msgs = (json['messages'] as List<dynamic>? ?? [])
+        .map((e) => ChatMessage.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return ChatThread(
+      id: json['id'] as String,
+      user: json['user'] as String,
+      messages: msgs,
+    );
+  }
+}
+
+class ChatMessage {
+  final String text;
+  final bool fromMe;
+  final DateTime? timestamp;
+
+  ChatMessage({required this.text, required this.fromMe, this.timestamp});
+
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    return ChatMessage(
+      text: json['text'] as String,
+      fromMe: json['fromMe'] as bool? ?? false,
+      timestamp: json['ts'] != null ? DateTime.tryParse(json['ts']) : null,
+    );
+  }
+}
+
+Future<List<ChatThread>> loadThreadsForProfile(String profile) async {
+  // e.g. assets/metadata/laralacht_dms.json
+  final path = 'assets/metadata/${profile}_dms.json';
+  final jsonStr = await rootBundle.loadString(path);
+  final jsonData = json.decode(jsonStr) as Map<String, dynamic>;
+  final threads = (jsonData['threads'] as List<dynamic>? ?? [])
+      .map((e) => ChatThread.fromJson(e as Map<String, dynamic>))
+      .toList();
+  return threads;
 }
