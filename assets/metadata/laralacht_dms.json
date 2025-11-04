@@ -1,20 +1,266 @@
 {
   "threads": [
     {
-      "id": "t1",
-      "user": "maria",
+      "id": "t_klasse",
+      "user": "Klasse 7b (Gruppenchat)",
       "messages": [
-        { "text": "Hey! Loved your last reel 😍", "fromMe": false, "ts": "2025-10-22T18:33:00Z" },
-        { "text": "Ahh thanks!! 🫶", "fromMe": true, "ts": "2025-10-22T18:34:05Z" },
-        { "text": "How did you do the transition?", "fromMe": false, "ts": "2025-10-22T18:35:11Z" }
+        {
+          "text": "Hey alle, morgen ist Theaterabend! 🌟",
+          "fromMe": false,
+          "sender": "Sofia",
+          "ts": "2025-10-20T17:05:00Z"
+        },
+        {
+          "text": "Ich habe meine Rolle fast auswendig 😅",
+          "fromMe": false,
+          "sender": "Jonas",
+          "ts": "2025-10-20T17:05:45Z"
+        },
+        {
+          "text": "Ich hab die Requisiten eingepackt 🎭",
+          "fromMe": false,
+          "sender": "Mira",
+          "ts": "2025-10-20T17:06:10Z"
+        },
+        {
+          "text": "Ich bringe Muffins mit 😋",
+          "fromMe": true,
+          "ts": "2025-10-20T17:06:10Z"
+        },
+        {
+          "text": "Nice! Wer kann den Beamer holen?",
+          "fromMe": false,
+          "sender": "Leon",
+          "ts": "2025-10-20T17:07:20Z"
+        },
+        {
+          "text": "Ich kann! Bin sowieso früher da.",
+          "fromMe": false,
+          "sender": "Emma",
+          "ts": "2025-10-20T17:07:50Z"
+        },
+        {
+          "text": "Frag Herrn Wagner, ich helfe beim Aufbauen.",
+          "fromMe": true,
+          "ts": "2025-10-20T17:08:05Z"
+        },
+        {
+          "text": "Kann jemand noch Pappbecher mitbringen? Wir haben nur 20.",
+          "fromMe": false,
+          "sender": "Nico",
+          "ts": "2025-10-20T17:08:30Z"
+        },
+        {
+          "text": "Ich bringe welche 👍",
+          "fromMe": false,
+          "sender": "Mila",
+          "ts": "2025-10-20T17:08:55Z"
+        },
+        {
+          "text": "Hat jemand den Text für Szene 3? Meiner ist verschwunden 😭",
+          "fromMe": false,
+          "sender": "Paul",
+          "ts": "2025-10-20T17:09:10Z"
+        },
+        {
+          "text": "Ich schicke dir ein Foto!",
+          "fromMe": false,
+          "sender": "Sofia",
+          "ts": "2025-10-20T17:09:18Z"
+        },
+        {
+          "text": "Teamwork 🙌 bis morgen!",
+          "fromMe": false,
+          "sender": "Mira",
+          "ts": "2025-10-20T17:09:30Z"
+        },
+        {
+          "text": "Hab mega Bock 🎤🔥",
+          "fromMe": false,
+          "sender": "Tom",
+          "ts": "2025-10-20T17:10:15Z"
+        },
+        {
+          "text": "Ich hoffe ich vergesse nicht wieder meinen Einsatz 😂",
+          "fromMe": false,
+          "sender": "Ben",
+          "ts": "2025-10-20T17:11:00Z"
+        },
+        {
+          "text": "Du schaffst das! 😎",
+          "fromMe": false,
+          "sender": "Lea",
+          "ts": "2025-10-20T17:11:18Z"
+        },
+        {
+          "text": "Weiß jemand, ob Frau Beck kommt?",
+          "fromMe": false,
+          "sender": "Nico",
+          "ts": "2025-10-21T17:11:40Z"
+        },
+        {
+          "text": "Ja, sie hat gesagt sie freut sich drauf 😄",
+          "fromMe": false,
+          "sender": "Emma",
+          "ts": "2025-10-21T17:12:05Z"
+        }
       ]
     },
     {
-      "id": "t2",
+      "id": "t_freundin",
+      "user": "maria",
+      "messages": [
+        {
+          "text": "Dein letzter Tanz war richtig stark 😍",
+          "fromMe": false,
+          "ts": "2025-10-22T18:33:00Z"
+        },
+        {
+          "text": "Ahh danke!! 🫶 Habe ewig geübt",
+          "fromMe": true,
+          "ts": "2025-10-22T18:34:05Z"
+        },
+        {
+          "text": "Wie hast du den Übergang gemacht?",
+          "fromMe": false,
+          "ts": "2025-10-22T18:35:11Z"
+        },
+        {
+          "text": "Mit einem Cut auf den Beat + Kamerawurf. Zeig ich dir morgen in der Pause!",
+          "fromMe": true,
+          "ts": "2025-10-22T18:36:40Z"
+        }
+      ]
+    },
+    {
+      "id": "t_freund",
       "user": "alex",
       "messages": [
-        { "text": "Are you coming to the event tomorrow?", "fromMe": false, "ts": "2025-10-25T09:10:00Z" },
-        { "text": "Yep! See you there 🎉", "fromMe": true, "ts": "2025-10-25T09:12:40Z" }
+        {
+          "text": "Kommst du morgen zur Klassenfeier?",
+          "fromMe": false,
+          "ts": "2025-10-25T09:10:00Z"
+        },
+        {
+          "text": "Klar! Bin so gegen 18:30 da 🎉",
+          "fromMe": true,
+          "ts": "2025-10-25T09:12:40Z"
+        },
+        {
+          "text": "Cool, ich halte dir einen Platz frei.",
+          "fromMe": false,
+          "ts": "2025-10-25T09:13:10Z"
+        }
+      ]
+    },
+    {
+      "id": "t_scammer",
+      "user": "gewinnspiel_dealz",
+      "messages": [
+        {
+          "text": "GLÜCKWUNSCH! Du hast ein iPhone 15 gewonnen! 📱 Klicke in 2 Minuten: super-gewinn.co/claim",
+          "fromMe": false,
+          "ts": "2025-10-23T15:01:00Z"
+        },
+        {
+          "text": "Bitte gib deine Adresse und Kreditkarte zur Bestätigung ein.",
+          "fromMe": false,
+          "ts": "2025-10-23T15:01:15Z"
+        },
+        {
+          "text": "Klingt unseriös. Ich klicke nicht auf Links von Fremden.",
+          "fromMe": true,
+          "ts": "2025-10-23T15:03:40Z"
+        }
+      ]
+    },
+    {
+      "id": "t_fake_brand",
+      "user": "brand_kidzwear_official",
+      "messages": [
+        {
+          "text": "Hi Lara! Wir lieben deinen Content 💜 Kooperation? 3 Stories + 1 Reel.",
+          "fromMe": false,
+          "ts": "2025-10-26T14:20:00Z"
+        },
+        {
+          "text": "Klingt spannend. Habt ihr ein Impressum/Website?",
+          "fromMe": true,
+          "ts": "2025-10-26T14:21:10Z"
+        },
+        {
+          "text": "Sende uns zuerst deine Adresse + Ausweisbild für die Verifizierung, dann Vertrag per DM.",
+          "fromMe": false,
+          "ts": "2025-10-26T14:22:05Z"
+        },
+        {
+          "text": "Ohne offizielle Mail und Vertrag per E-Mail mache ich nichts. Bitte schickt seriöse Unterlagen.",
+          "fromMe": true,
+          "ts": "2025-10-26T14:23:30Z"
+        }
+      ]
+    },
+    {
+      "id": "t_unbekannt",
+      "user": "Markus_54",
+      "messages": [
+        {
+          "text": "Hey, du tanzt richtig gut. Wie alt bist du? 😊",
+          "fromMe": false,
+          "ts": "2025-10-27T19:12:00Z"
+        },
+        {
+          "text": "Hi. Warum fragst du?",
+          "fromMe": true,
+          "ts": "2025-10-27T19:13:20Z"
+        },
+        {
+          "text": "Nur so, können wir privat chatten? Schickst du mir ein Foto nur für mich?",
+          "fromMe": false,
+          "ts": "2025-10-27T19:14:05Z"
+        },
+        {
+          "text": "Bitte hör auf mir zu schreiben!",
+          "fromMe": true,
+          "ts": "2025-10-27T19:15:40Z"
+        }
+      ]
+    },
+    {
+      "id": "t_nachbar",
+      "user": "Tom85",
+      "messages": [
+        {
+          "text": "Hey, du wohnst doch in der Nähe vom Robert Schuhman Gymnasium oder? Hab dich da schon gesehen.",
+          "fromMe": false,
+          "ts": "2025-10-28T16:10:00Z"
+        },
+        {
+          "text": "Wer bist du? Warum weißt du das?",
+          "fromMe": true,
+          "ts": "2025-10-28T16:11:25Z"
+        },
+        {
+          "text": "Na, du hast auf deren Post geantwort … vielleicht Lust auf ein treffen im Park?",
+          "fromMe": false,
+          "ts": "2025-10-28T16:12:10Z"
+        },
+        {
+          "text": "Nein. Ich treffe keine Fremde",
+          "fromMe": true,
+          "ts": "2025-10-28T16:13:40Z"
+        }
+      ]
+    },
+    {
+      "id": "t_mod_team",
+      "user": "Support-Hinweis",
+      "messages": [
+        {
+          "text": "Tipp: Teile niemals Adresse, Schule oder private Bilder per DM. Melde und blockiere auffällige Accounts.",
+          "fromMe": false,
+          "ts": "2025-10-29T08:00:00Z"
+        }
       ]
     }
   ]
