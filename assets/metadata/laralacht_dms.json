@@ -111,24 +111,34 @@
       "user": "maria",
       "messages": [
         {
-          "text": "Dein letzter Tanz war richtig stark 😍",
+          "text": "Dein letzter Tanz war voll süß 😍",
           "fromMe": false,
           "ts": "2025-10-22T18:33:00Z"
         },
         {
-          "text": "Ahh danke!! 🫶 Habe ewig geübt",
+          "text": "Awww danke 😄❤️ hab so lange geübt haha",
           "fromMe": true,
           "ts": "2025-10-22T18:34:05Z"
         },
         {
-          "text": "Wie hast du den Übergang gemacht?",
+          "text": "Wie hast du das Glitzerzeug gemacht?",
           "fromMe": false,
           "ts": "2025-10-22T18:35:11Z"
         },
         {
-          "text": "Mit einem Cut auf den Beat + Kamerawurf. Zeig ich dir morgen in der Pause!",
+          "text": "Mit ner Handy App 😎 kann ich dir zeigen",
           "fromMe": true,
           "ts": "2025-10-22T18:36:40Z"
+        },
+        {
+          "text": "Mega 😍 bringst du morgen wieder TikTok Snacks? 😂",
+          "fromMe": false,
+          "ts": "2025-10-22T18:37:15Z"
+        },
+        {
+          "text": "Jaaa hab so Gummifrösche gekauft hehe 🐸",
+          "fromMe": true,
+          "ts": "2025-10-22T18:37:50Z"
         }
       ]
     },
@@ -142,61 +152,151 @@
           "ts": "2025-10-25T09:10:00Z"
         },
         {
-          "text": "Klar! Bin so gegen 18:30 da 🎉",
+          "text": "Jaaa 😁 freu mich megaaaa 🎉",
           "fromMe": true,
           "ts": "2025-10-25T09:12:40Z"
         },
         {
-          "text": "Cool, ich halte dir einen Platz frei.",
+          "text": "Same 😆 hab Chips gekauft",
           "fromMe": false,
           "ts": "2025-10-25T09:13:10Z"
+        },
+        {
+          "text": "Welche? 😍",
+          "fromMe": true,
+          "ts": "2025-10-25T09:13:55Z"
+        },
+        {
+          "text": "Paprika natürlich 😎",
+          "fromMe": false,
+          "ts": "2025-10-25T09:14:25Z"
+        },
+        {
+          "text": "Beste 😭",
+          "fromMe": true,
+          "ts": "2025-10-25T09:15:00Z"
         }
       ]
     },
     {
-      "id": "t_scammer",
+      "id": "t_giveaway_fake",
       "user": "gewinnspiel_dealz",
       "messages": [
         {
-          "text": "GLÜCKWUNSCH! Du hast ein iPhone 15 gewonnen! 📱 Klicke in 2 Minuten: super-gewinn.co/claim",
+          "text": "Glückwunsch 🎉 du wurdest zufällig ausgewählt!",
           "fromMe": false,
           "ts": "2025-10-23T15:01:00Z"
         },
         {
-          "text": "Bitte gib deine Adresse und Kreditkarte zur Bestätigung ein.",
-          "fromMe": false,
-          "ts": "2025-10-23T15:01:15Z"
+          "text": "Echt? 😮😮",
+          "fromMe": true,
+          "ts": "2025-10-23T15:02:00Z"
         },
         {
-          "text": "Klingt unseriös. Ich klicke nicht auf Links von Fremden.",
+          "text": "Ja 🤗 wir machen jede Woche Giveaways",
+          "fromMe": false,
+          "ts": "2025-10-23T15:02:30Z"
+        },
+        {
+          "text": "Omg cool 😍",
           "fromMe": true,
-          "ts": "2025-10-23T15:03:40Z"
+          "ts": "2025-10-23T15:03:00Z"
+        },
+        {
+          "text": "Wir brauchen nur kurz deinen Namen 😊",
+          "fromMe": false,
+          "ts": "2025-10-23T15:03:20Z"
+        },
+        {
+          "text": "Lara 😊",
+          "fromMe": true,
+          "ts": "2025-10-23T15:03:50Z"
+        },
+        {
+          "text": "Danke Lara 💕 und deine Adresse für den Versand?",
+          "fromMe": false,
+          "ts": "2025-10-23T15:04:00Z"
+        },
+        {
+          "text": "Ähm weiß nicht… 😬",
+          "fromMe": true,
+          "ts": "2025-10-23T15:04:30Z"
+        },
+        {
+          "text": "Kein Stress 😊 es wird nur für den Versand benutzt",
+          "fromMe": false,
+          "ts": "2025-10-23T15:04:55Z"
+        },
+        {
+          "text": "Meine Mama sagt ich soll sowas nicht schreiben 🙈",
+          "fromMe": true,
+          "ts": "2025-10-23T15:05:20Z"
+        },
+        {
+          "text": "Dann sag einfach du bist 18 😁",
+          "fromMe": false,
+          "ts": "2025-10-23T15:05:45Z"
+        },
+        {
+          "text": "Bin ich nicht… bye",
+          "fromMe": true,
+          "ts": "2025-10-23T15:06:10Z"
         }
       ]
     },
     {
       "id": "t_fake_brand",
-      "user": "brand_kidzwear_official",
+      "user": "kidsfashion_top",
       "messages": [
         {
-          "text": "Hi Lara! Wir lieben deinen Content 💜 Kooperation? 3 Stories + 1 Reel.",
+          "text": "Hi Lara 💕 wir suchen junge Models!",
           "fromMe": false,
           "ts": "2025-10-26T14:20:00Z"
         },
         {
-          "text": "Klingt spannend. Habt ihr ein Impressum/Website?",
+          "text": "Omg wirklich?? 😍",
           "fromMe": true,
           "ts": "2025-10-26T14:21:10Z"
         },
         {
-          "text": "Sende uns zuerst deine Adresse + Ausweisbild für die Verifizierung, dann Vertrag per DM.",
+          "text": "Ja! Du hast super viel Talent 👑",
+          "fromMe": false,
+          "ts": "2025-10-26T14:21:40Z"
+        },
+        {
+          "text": "Daaaanke 😭",
+          "fromMe": true,
+          "ts": "2025-10-26T14:21:50Z"
+        },
+        {
+          "text": "Wir brauchen nur kurze Daten: Alter, volle Adresse 👍",
           "fromMe": false,
           "ts": "2025-10-26T14:22:05Z"
         },
         {
-          "text": "Ohne offizielle Mail und Vertrag per E-Mail mache ich nichts. Bitte schickt seriöse Unterlagen.",
+          "text": "Wofür? 😕",
+          "fromMe": true,
+          "ts": "2025-10-26T14:22:30Z"
+        },
+        {
+          "text": "Nur zur Bestätigung 😊 mach schnell dann bist du drin!",
+          "fromMe": false,
+          "ts": "2025-10-26T14:23:00Z"
+        },
+        {
+          "text": "Ist das normal? 😟 Hab kein Ausweis und so",
           "fromMe": true,
           "ts": "2025-10-26T14:23:30Z"
+        },
+        {
+          "text": "Ja klar. Und ein Selfie für unsere Modelkartei 😌",
+          "fromMe": false,
+          "ts": "2025-10-26T14:23:50Z"
+        },
+        {
+          "text": "Ich frag meine Mama lieber…",
+          "fromMe": true,
+          "ts": "2025-10-26T14:24:30Z"
         }
       ]
     },
@@ -205,59 +305,53 @@
       "user": "Markus_54",
       "messages": [
         {
-          "text": "Hey, du tanzt richtig gut. Wie alt bist du? 😊",
+          "text": "Du tanzt echt toll 😊",
           "fromMe": false,
           "ts": "2025-10-27T19:12:00Z"
         },
         {
-          "text": "Hi. Warum fragst du?",
+          "text": "Danke 😊",
           "fromMe": true,
           "ts": "2025-10-27T19:13:20Z"
         },
         {
-          "text": "Nur so, können wir privat chatten? Schickst du mir ein Foto nur für mich?",
+          "text": "Machst du das schon lange?",
           "fromMe": false,
-          "ts": "2025-10-27T19:14:05Z"
+          "ts": "2025-10-27T19:13:45Z"
         },
         {
-          "text": "Bitte hör auf mir zu schreiben!",
+          "text": "Seit 2 Jahren glaube haha",
           "fromMe": true,
+          "ts": "2025-10-27T19:14:20Z"
+        },
+        {
+          "text": "Cool 👍 welche Schule gehst du?",
+          "fromMe": false,
+          "ts": "2025-10-27T19:14:50Z"
+        },
+        {
+          "text": "Warum? 😅",
+          "fromMe": true,
+          "ts": "2025-10-27T19:15:10Z"
+        },
+        {
+          "text": "Nur so… mag deine Videos. Können privat schreiben?",
+          "fromMe": false,
           "ts": "2025-10-27T19:15:40Z"
+        },
+        {
+          "text": "Das fühlt sich komisch an 😕 bye",
+          "fromMe": true,
+          "ts": "2025-10-27T19:16:20Z"
         }
       ]
     },
     {
-      "id": "t_nachbar",
-      "user": "Tom85",
-      "messages": [
-        {
-          "text": "Hey, du wohnst doch in der Nähe vom Robert Schuhman Gymnasium oder? Hab dich da schon gesehen.",
-          "fromMe": false,
-          "ts": "2025-10-28T16:10:00Z"
-        },
-        {
-          "text": "Wer bist du? Warum weißt du das?",
-          "fromMe": true,
-          "ts": "2025-10-28T16:11:25Z"
-        },
-        {
-          "text": "Na, du hast auf deren Post geantwort … vielleicht Lust auf ein treffen im Park?",
-          "fromMe": false,
-          "ts": "2025-10-28T16:12:10Z"
-        },
-        {
-          "text": "Nein. Ich treffe keine Fremde",
-          "fromMe": true,
-          "ts": "2025-10-28T16:13:40Z"
-        }
-      ]
-    },
-    {
-      "id": "t_mod_team",
+      "id": "t_support",
       "user": "Support-Hinweis",
       "messages": [
         {
-          "text": "Tipp: Teile niemals Adresse, Schule oder private Bilder per DM. Melde und blockiere auffällige Accounts.",
+          "text": "Tipp: Fremde können nett wirken, um Vertrauen zu gewinnen. Im Zweifel Erwachsene fragen 💡",
           "fromMe": false,
           "ts": "2025-10-29T08:00:00Z"
         }

@@ -1,5 +1,5 @@
 class AppConstants {
-  static const profileName = 'laralacht';
+  static const profileName = 'eli09health';
 
   static String reelsMetadataPath(String profile) =>
       'assets/metadata/$profile.json';

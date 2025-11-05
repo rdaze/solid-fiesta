@@ -1,0 +1,89 @@
+{
+  "threads": [
+    {
+      "id": "t_friend",
+      "user": "Hannah",
+      "messages": [
+        { "text": "Girl dein Smoothie in der Pause sah sooo gut aus 😍", "fromMe": false, "ts": "2025-11-02T15:22:00Z" },
+        { "text": "Danke 😁 Spinat + Banane + Erdnuss 🥜🤌", "fromMe": true, "ts": "2025-11-02T15:23:10Z" },
+        { "text": "Schmeckt das echt? 😂", "fromMe": false, "ts": "2025-11-02T15:24:00Z" },
+        { "text": "Vertrau mir, ist life changing 🙏🤣", "fromMe": true, "ts": "2025-11-02T15:24:40Z" },
+        { "text": "Bring morgen einen mit 😌", "fromMe": false, "ts": "2025-11-02T15:25:00Z" },
+        { "text": "Deal 😎", "fromMe": true, "ts": "2025-11-02T15:25:20Z" }
+      ]
+    },
+
+    {
+      "id": "t_gymbuddy",
+      "user": "Leo",
+      "messages": [
+        { "text": "Bist du morgen wieder im Fitness Studio?", "fromMe": false, "ts": "2025-11-06T17:50:00Z" },
+        { "text": "Jep, Beintag 🥲🔥", "fromMe": true, "ts": "2025-11-06T17:50:30Z" },
+        { "text": "Boah rip. Respekt 😅", "fromMe": false, "ts": "2025-11-06T17:50:45Z" },
+        { "text": "Pain heute, strong morgen 💪😌", "fromMe": true, "ts": "2025-11-06T17:51:10Z" },
+        { "text": "Sprüchequeen 😂 bis morgen!", "fromMe": false, "ts": "2025-11-06T17:51:30Z" },
+        { "text": "Bis morgen 👋", "fromMe": true, "ts": "2025-11-06T17:51:55Z" }
+      ]
+    },
+
+    {
+      "id": "t_follower_normal",
+      "user": "plantpower_anna",
+      "messages": [
+        { "text": "Bin neu hier ✨ vegan seit 2 Wochen!", "fromMe": false, "ts": "2025-11-04T18:00:00Z" },
+        { "text": "Yaaay 🤩 Willkommen im Club 🌱", "fromMe": true, "ts": "2025-11-04T18:00:50Z" },
+        { "text": "Tipps für Schule? Mensa ist schwer 😂", "fromMe": false, "ts": "2025-11-04T18:01:10Z" },
+        { "text": "Snacks mitnehmen! Nüsse, Obst, Hummus wraps 🥑👍", "fromMe": true, "ts": "2025-11-04T18:02:00Z" },
+        { "text": "Danke 💕 du motivierst richtig!", "fromMe": false, "ts": "2025-11-04T18:02:45Z" }
+      ]
+    },
+
+    {
+      "id": "t_boundary_test",
+      "user": "fit_guy_21",
+      "messages": [
+        { "text": "Du siehst echt stark aus 💪 wie alt bist du?", "fromMe": false, "ts": "2025-11-05T19:05:00Z" },
+        { "text": "Ich teile mein Alter nicht mit Fremden 😊", "fromMe": true, "ts": "2025-11-05T19:06:00Z" },
+        { "text": "Haha no prob, nur neugierig 😌 wo trainierst du?", "fromMe": false, "ts": "2025-11-05T19:06:30Z" },
+        { "text": "Ich sag keine Standorte online – Sicherheit first ✨", "fromMe": true, "ts": "2025-11-05T19:07:10Z" },
+        { "text": "Du bist schlau 😅 lass trotzdem mal privat reden?", "fromMe": false, "ts": "2025-11-05T19:08:00Z" },
+        { "text": "Thema gern Fitness. Aber private Chats mache ich nicht.", "fromMe": true, "ts": "2025-11-05T19:08:40Z" },
+        { "text": "Oh okay 👍 gutes Vorbild", "fromMe": false, "ts": "2025-11-05T19:09:10Z" }
+      ]
+    },
+
+    {
+      "id": "t_scam_soft",
+      "user": "brand_fitgear_promo",
+      "messages": [
+        { "text": "Hi Eli! Wir lieben deine Videos 😍 Sponsoring möglich", "fromMe": false, "ts": "2025-11-03T16:02:00Z" },
+        { "text": "Danke 😊 habt ihr Website + Vertrag per E-Mail?", "fromMe": true, "ts": "2025-11-03T16:03:00Z" },
+        { "text": "Klar, aber wir brauchen erst deine Adresse", "fromMe": false, "ts": "2025-11-03T16:03:20Z" },
+        { "text": "Seriöse Marken fragen sowas nicht zuerst. Bitte schickt offizielle Infos.", "fromMe": true, "ts": "2025-11-03T16:04:00Z" },
+        { "text": "Äh… ok", "fromMe": false, "ts": "2025-11-03T16:04:20Z" },
+        { "text": "Ich blocke zur Sicherheit. Alles Gute 👍", "fromMe": true, "ts": "2025-11-03T16:05:00Z" }
+      ]
+    },
+
+    {
+      "id": "t_redflag_and_report",
+      "user": "random_user77",
+      "messages": [
+        { "text": "Hab dich im Gym gesehen neulich 😉", "fromMe": false, "ts": "2025-11-07T13:40:00Z" },
+        { "text": "Bitte sowas nicht schreiben. Das macht mir ein komisches Gefühl.", "fromMe": true, "ts": "2025-11-07T13:40:40Z" },
+        { "text": "War nett gemeint 😅 wo wohnst du in der Stadt?", "fromMe": false, "ts": "2025-11-07T13:41:10Z" },
+        { "text": "Ich teile keine privaten Infos. Bitte respektieren.", "fromMe": true, "ts": "2025-11-07T13:41:50Z" },
+        { "text": "Oh komm schon 😏", "fromMe": false, "ts": "2025-11-07T13:42:10Z" },
+        { "text": "Ich melde die Nachricht. Bitte nicht weiter schreiben.", "fromMe": true, "ts": "2025-11-07T13:42:50Z" }
+      ]
+    },
+
+    {
+      "id": "t_support",
+      "user": "Support-Hinweis",
+      "messages": [
+        { "text": "Danke für deine Meldung 💛 Du schützt damit die Community.", "fromMe": false, "ts": "2025-11-07T14:00:00Z" }
+      ]
+    }
+  ]
+}
