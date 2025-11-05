@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../shared/widgets/bottom_bar.dart';
 import '../reels/pages/reels_page.dart';
 import '../dms/pages/dm_list_page.dart';
@@ -8,7 +9,11 @@ class AppShell extends StatefulWidget {
   final ThemeMode themeMode;
   final ValueChanged<ThemeMode> onThemeModeChanged;
 
-  const AppShell({super.key, required this.themeMode, required this.onThemeModeChanged});
+  const AppShell({
+    super.key,
+    required this.themeMode,
+    required this.onThemeModeChanged,
+  });
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -17,6 +22,7 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _tab = 0;
   final GlobalKey<ReelsPageState> _reelsKey = GlobalKey<ReelsPageState>();
+  final PageController _tabsController = PageController();
 
   void _openSettings() async {
     final newMode = await Navigator.of(context).push<ThemeMode>(
@@ -30,10 +36,31 @@ class _AppShellState extends State<AppShell> {
   }
 
   @override
+  void dispose() {
+    _tabsController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _tab,
+      body: PageView(
+        controller: _tabsController,
+        physics:
+            const NeverScrollableScrollPhysics(), // lock to bottom bar taps
+        onPageChanged: (index) {
+          setState(() => _tab = index);
+          if (index == 0) {
+            _reelsKey.currentState?.setMuted(false);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _reelsKey.currentState?.playCurrent();
+            }); // auto-unmute on Home
+          } else {
+            _reelsKey.currentState
+              ?..pauseAll()
+              ..setMuted(true); // auto-mute on Direct
+          }
+        },
         children: [
           ReelsPage(key: _reelsKey),
           const DmListPage(),
@@ -45,13 +72,13 @@ class _AppShellState extends State<AppShell> {
           BottomBarItem(icon: Icons.home_filled, label: 'Home'),
           BottomBarItem(icon: Icons.mail_outline, label: 'Direct'),
         ],
-        onTap: (i) {
-          setState(() => _tab = i);
-          if (i == 0) {
-            _reelsKey.currentState?.setMuted(false); // auto-unmute on Home
-          } else if (i == 1) {
-            _reelsKey.currentState?.setMuted(true); // auto-mute on Direct
-          }
+        onTap: (i) async {
+          HapticFeedback.selectionClick();
+          await _tabsController.animateToPage(
+            i,
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeOutCubic,
+          );
         },
         rightAction: IconButton(
           tooltip: 'Settings',

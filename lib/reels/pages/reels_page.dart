@@ -20,12 +20,37 @@ class ReelsPageState extends State<ReelsPage> {
   List<File> _videoFiles = [];
   Map<String, VideoMeta> _metadata = {};
   bool _loading = true;
+  int _currentPage = 0;
 
   bool get _isMuted => _reels.isMuted;
 
-  // Allow AppShell to control mute
   void setMuted(bool value) {
     setState(() => _reels.setMuted(value));
+    final vol = value ? 0.0 : 1.0;
+    for (var i = 0; i < _videoFiles.length; i++) {
+      _reels.controllerFor(i)?.setVolume(vol);
+    }
+  }
+
+  void pauseAll() {
+    for (var i = 0; i < _videoFiles.length; i++) {
+      final c = _reels.controllerFor(i);
+      c?.pause();
+    }
+  }
+
+  void playCurrent() {
+    final c = _reels.controllerFor(_currentPage);
+    if (c == null) return;
+    if (c.value.isInitialized) {
+      c.play();
+    } else {
+      c.addListener(() {
+        if (c.value.isInitialized) {
+          c.play();
+        }
+      });
+    }
   }
 
   @override
@@ -51,6 +76,8 @@ class ReelsPageState extends State<ReelsPage> {
       _metadata = meta;
       _loading = false;
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => playCurrent());
   }
 
   @override
@@ -71,7 +98,26 @@ class ReelsPageState extends State<ReelsPage> {
       scrollDirection: Axis.vertical,
       physics: const BouncingScrollPhysics(),
       itemCount: _videoFiles.length,
-      onPageChanged: (index) => _reels.onPageChanged(index),
+      onPageChanged: (index) {
+        _currentPage = index;
+        _reels.onPageChanged(index); // keep your existing controller logic
+        // hard-ensure only the current plays
+        for (var i = 0; i < _videoFiles.length; i++) {
+          final c = _reels.controllerFor(i);
+          if (c == null) continue;
+          if (i == index) {
+            if (c.value.isInitialized) {
+              c.play();
+            } else {
+              c.addListener(() {
+                if (c.value.isInitialized) c.play();
+              });
+            }
+          } else {
+            c.pause();
+          }
+        }
+      },
       itemBuilder: (context, index) {
         final file = _videoFiles[index];
         final name = file.path.split('/').last;

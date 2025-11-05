@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../app/app_constants.dart';
 import '../models/chat_thread.dart';
 import '../services/dm_loader.dart';
@@ -38,27 +40,37 @@ class _DmListPageState extends State<DmListPage> {
           if (threads.isEmpty) {
             return const Center(child: Text('No chats yet.'));
           }
-          return ListView.separated(
-            itemCount: threads.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemBuilder: (context, i) {
-              final t = threads[i];
-              return ListTile(
-                leading: BlockyAvatar(seed: t.user, size: 40),
-                title: Text(t.user),
-                subtitle: Text(
-                  t.messages.isNotEmpty ? t.messages.last.text : 'No messages',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => DmThreadPage(thread: t)),
-                  );
-                },
-              );
-            },
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width > 600 ? 40 : 0,
+            ),
+            child: ListView.separated(
+              itemCount: threads.length,
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (context, i) {
+                final t = threads[i];
+                return ListTile(
+                  leading: BlockyAvatar(seed: t.user, size: 40),
+                  title: Text(t.user),
+                  subtitle: Text(
+                    t.messages.isNotEmpty
+                        ? t.messages.last.text
+                        : 'No messages',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (_) => DmThreadPage(thread: t),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
       ),

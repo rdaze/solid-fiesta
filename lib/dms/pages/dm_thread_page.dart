@@ -8,91 +8,124 @@ class DmThreadPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final contentWidth = screenWidth > 500 ? screenWidth * 0.8 : screenWidth;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        titleSpacing: 0,
-        title: Row(
+        titleSpacing: 5,
+        automaticallyImplyLeading: false,
+        title: Stack(
+          alignment: Alignment.center,
           children: [
-            BlockyAvatar(seed: thread.user, size: 32),
-            const SizedBox(width: 12),
-            Text(thread.user),
+            // Left aligned back button
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, size: 25),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                BlockyAvatar(seed: thread.user, size: 28),
+                const SizedBox(width: 8),
+                Text(
+                  thread.user,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: thread.messages.length,
-        itemBuilder: (context, i) {
-          final m = thread.messages[i];
-          final isMe = m.fromMe;
-          final displayName = isMe ? 'Du' : (m.sender ?? thread.user);
-          final isGroup = thread.messages.any(
-            (msg) => !msg.fromMe && msg.sender != null && msg.sender!.isNotEmpty,
-          );
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: contentWidth),
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            itemCount: thread.messages.length,
+            itemBuilder: (context, i) {
+              final m = thread.messages[i];
+              final isMe = m.fromMe;
+              final displayName = isMe ? 'Du' : (m.sender ?? thread.user);
+              final isGroup = thread.messages.any(
+                (msg) =>
+                    !msg.fromMe && msg.sender != null && msg.sender!.isNotEmpty,
+              );
 
-          final prev = i > 0 ? thread.messages[i - 1] : null;
-          final sameSenderAsPrev =
-              prev != null &&
-              prev.fromMe == m.fromMe &&
-              (prev.sender ?? '') == (m.sender ?? '');
+              final prev = i > 0 ? thread.messages[i - 1] : null;
+              final sameSenderAsPrev =
+                  prev != null &&
+                  prev.fromMe == m.fromMe &&
+                  (prev.sender ?? '') == (m.sender ?? '');
 
-          // --- Day separator logic ---
-          bool showDayHeader = false;
-          if (m.timestamp != null) {
-            final prevTs = prev?.timestamp;
-            final cur = m.timestamp!.toLocal();
-            final prevLocal = prevTs?.toLocal();
-            showDayHeader = prevLocal == null ||
-                cur.day != prevLocal.day ||
-                cur.month != prevLocal.month ||
-                cur.year != prevLocal.year;
-          }
+              // --- Day separator logic ---
+              bool showDayHeader = false;
+              if (m.timestamp != null) {
+                final prevTs = prev?.timestamp;
+                final cur = m.timestamp!.toLocal();
+                final prevLocal = prevTs?.toLocal();
+                showDayHeader =
+                    prevLocal == null ||
+                    cur.day != prevLocal.day ||
+                    cur.month != prevLocal.month ||
+                    cur.year != prevLocal.year;
+              }
 
-          if (showDayHeader) {
-            final formatted = MaterialLocalizations.of(context)
-                .formatFullDate(m.timestamp!.toLocal());
-            return Column(
-              crossAxisAlignment:
-                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Center(
-                    child: Text(
-                      formatted,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.5),
-                        fontWeight: FontWeight.w500,
+              if (showDayHeader) {
+                final formatted = MaterialLocalizations.of(
+                  context,
+                ).formatFullDate(m.timestamp!.toLocal());
+                return Column(
+                  crossAxisAlignment: isMe
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Center(
+                        child: Text(
+                          formatted,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.5),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                _buildMessageBubble(
-                  context: context,
-                  m: m,
-                  isMe: isMe,
-                  sameSenderAsPrev: sameSenderAsPrev,
-                  displayName: displayName,
-                  isGroup: isGroup,
-                ),
-              ],
-            );
-          }
+                    _buildMessageBubble(
+                      context: context,
+                      m: m,
+                      isMe: isMe,
+                      sameSenderAsPrev: sameSenderAsPrev,
+                      displayName: displayName,
+                      isGroup: isGroup,
+                    ),
+                  ],
+                );
+              }
 
-          // Default: just the message bubble
-          return _buildMessageBubble(
-            context: context,
-            m: m,
-            isMe: isMe,
-            sameSenderAsPrev: sameSenderAsPrev,
-            displayName: displayName,
-            isGroup: isGroup,
-          );
-        },
+              // Default: just the message bubble
+              return _buildMessageBubble(
+                context: context,
+                m: m,
+                isMe: isMe,
+                sameSenderAsPrev: sameSenderAsPrev,
+                displayName: displayName,
+                isGroup: isGroup,
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -118,13 +151,19 @@ class DmThreadPage extends StatelessWidget {
 
     final nameColor = theme.colorScheme.onSurface.withOpacity(0.6);
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final maxBubbleWidth = screenWidth > 600
+        ? screenWidth * 0.55
+        : screenWidth * 0.7;
+
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Column(
-          crossAxisAlignment:
-              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment: isMe
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
           children: [
             // Name shown only for others and only when the speaker changes
             if (isGroup && !isMe && !sameSenderAsPrev) ...[
@@ -136,9 +175,7 @@ class DmThreadPage extends StatelessWidget {
             ],
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.7,
-              ),
+              constraints: BoxConstraints(maxWidth: maxBubbleWidth),
               decoration: BoxDecoration(
                 color: bubbleColor,
                 borderRadius: BorderRadius.only(
